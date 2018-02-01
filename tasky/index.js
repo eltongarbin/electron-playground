@@ -3,7 +3,7 @@ const electron = require('electron');
 const TimerTray = require('./app/timer_tray');
 const MainWindow = require('./app/main_window');
 
-const { app } = electron;
+const { app, ipcMain } = electron;
 
 let mainWindow;
 let tray;
@@ -19,3 +19,9 @@ app.on('ready', () => {
 
   tray = new TimerTray(iconPath, mainWindow);
 });
+
+if (process.platform === 'darwin') {
+  ipcMain.on('update-timer', (event, timeLeft) => {
+    tray.setTitle(timeLeft);
+  });
+}
